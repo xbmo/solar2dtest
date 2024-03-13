@@ -173,6 +173,17 @@ function scene:create( event )
     )
 
     createSortButtons( gridView )
+
+    local function filterInputListener( event )
+        if ( "submitted" == event.phase or "ended" == event.phase ) then
+            model:filterData( event.target.text )
+            gridView:refresh(model:getNumEntries())
+        end
+    end
+
+    local filterWidth = 300
+    local filterField = native.newTextField( display.contentWidth - filterWidth / 2, scrollViewAnchorTop - 40, filterWidth, 32 )
+    filterField:addEventListener( "userInput", filterInputListener)
 end
  
  

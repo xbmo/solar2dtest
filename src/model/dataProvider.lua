@@ -71,6 +71,22 @@ function M.new()
         end
     end
 
+    function dataObject:filterData( filter )
+        local filteredData = {}
+        for k,v in ipairs(self.jsonData) do
+            filteredData[k] = v
+        end
+        self.data = filteredData
+
+        for i=#filteredData,1,-1 do
+            local entry = filteredData[i]
+            local pos = string.find(entry.noTitleName, filter)
+            if pos == nil then
+                table.remove(filteredData, i)
+            end
+        end
+    end
+
     function dataObject:getNumEntries()
         return #self.data
     end
