@@ -15,6 +15,12 @@ local scene = composer.newScene()
  local scrollViewWidth = display.contentWidth - scrollViewAnchorLeft - 10
  local scrollViewHeight = display.contentHeight - scrollViewAnchorTop - 10
 
+ local headerControlPosY = scrollViewAnchorTop - 50
+
+ local textColor1 = { 0.16, 0.29, 0.38, 1 }
+ local buttonColorRegular = { 0.09, 0.72, 0.69, 1 }
+ local buttonColorDown = { 1 }
+
  local model
 
  local function detailedItemRenderer( group, index, width, height )
@@ -51,17 +57,20 @@ local scene = composer.newScene()
 
     local buttonWidth = 100
     local buttonSpacing = 10
-    local buttonPos = scrollViewAnchorLeft
+    local buttonPos = scrollViewAnchorLeft + 10
     -- Sort A-z button
     widget.newButton(
         {
             left = buttonPos,
-            top = scrollViewAnchorTop - 40,
+            top = headerControlPosY,
             width = 100,
             height = 32,
             label = "Name A-z",
             shape = "roundedRect",
-            fillColor = { default={0.9}, over={0.1} },
+            labelColor = { default={ 1 }, over=buttonColorRegular },
+            fillColor = { default=buttonColorRegular, over=buttonColorDown },
+            strokeColor = {default=buttonColorRegular, over=buttonColorRegular},
+            strokeWidth = 2,
             onEvent = function( event ) sortButtonEvent( "nameAZ", event ) end
         }
     )
@@ -71,12 +80,15 @@ local scene = composer.newScene()
     widget.newButton(
         {
             left = buttonPos,
-            top = scrollViewAnchorTop - 40,
+            top = headerControlPosY,
             width = 100,
             height = 32,
             label = "Name Z-a",
             shape = "roundedRect",
-            fillColor = { default={0.9}, over={0.1} },
+            labelColor = { default={ 1 }, over=buttonColorRegular },
+            fillColor = { default=buttonColorRegular, over=buttonColorDown },
+            strokeColor = {default=buttonColorRegular, over=buttonColorRegular},
+            strokeWidth = 2,
             onEvent = function( event ) sortButtonEvent( "nameZA", event ) end
         }
     )
@@ -86,12 +98,15 @@ local scene = composer.newScene()
     widget.newButton(
         {
             left = buttonPos,
-            top = scrollViewAnchorTop - 40,
+            top = headerControlPosY,
             width = 100,
             height = 32,
             label = "Due >",
             shape = "roundedRect",
-            fillColor = { default={0.9}, over={0.1} },
+            labelColor = { default={ 1 }, over=buttonColorRegular },
+            fillColor = { default=buttonColorRegular, over=buttonColorDown },
+            strokeColor = {default=buttonColorRegular, over=buttonColorRegular},
+            strokeWidth = 2,
             onEvent = function( event ) sortButtonEvent( "dueAZ", event ) end
         }
     )
@@ -101,12 +116,15 @@ local scene = composer.newScene()
     widget.newButton(
         {
             left = buttonPos,
-            top = scrollViewAnchorTop - 40,
+            top = headerControlPosY,
             width = 100,
             height = 32,
             label = "Due <",
             shape = "roundedRect",
-            fillColor = { default={0.9}, over={0.1} },
+            labelColor = { default={ 1 }, over=buttonColorRegular },
+            fillColor = { default=buttonColorRegular, over=buttonColorDown },
+            strokeColor = {default=buttonColorRegular, over=buttonColorRegular},
+            strokeWidth = 2,
             onEvent = function( event ) sortButtonEvent( "dueZA", event ) end
         }
     )
@@ -116,12 +134,16 @@ local scene = composer.newScene()
     widget.newButton(
         {
             left = buttonPos,
-            top = scrollViewAnchorTop - 40,
+            top = headerControlPosY,
             width = 100,
             height = 32,
             label = "Outstanding >",
             shape = "roundedRect",
-            fillColor = { default={0.9}, over={0.1} },
+            fontSize = 12,
+            labelColor = { default={ 1 }, over=buttonColorRegular },
+            fillColor = { default=buttonColorRegular, over=buttonColorDown },
+            strokeColor = {default=buttonColorRegular, over=buttonColorRegular},
+            strokeWidth = 2,
             onEvent = function( event ) sortButtonEvent( "outstandingAZ", event ) end
         }
     )
@@ -131,12 +153,16 @@ local scene = composer.newScene()
     widget.newButton(
         {
             left = buttonPos,
-            top = scrollViewAnchorTop - 40,
+            top = headerControlPosY,
             width = 100,
             height = 32,
             label = "Outstanding <",
             shape = "roundedRect",
-            fillColor = { default={0.9}, over={0.1} },
+            fontSize = 12,
+            labelColor = { default={ 1 }, over=buttonColorRegular },
+            fillColor = { default=buttonColorRegular, over=buttonColorDown },
+            strokeColor = {default=buttonColorRegular, over=buttonColorRegular},
+            strokeWidth = 2,
             onEvent = function( event ) sortButtonEvent( "outstandingZA", event ) end
         }
     )
@@ -153,7 +179,29 @@ function scene:create( event )
     local sceneGroup = self.view
     
     local background = display.newRect( sceneGroup, display.contentCenterX, display.contentCenterY, display.contentWidth, display.contentHeight )
-    background:setFillColor( 0.5 )
+    background:setFillColor( 0.9 )
+
+    local headerGroup = display.newGroup()
+    local headerBackground = display.newRoundedRect( headerGroup, display.contentCenterX, scrollViewAnchorTop * 0.5, display.contentWidth - 20, scrollViewAnchorTop - 20, 5 )
+    headerBackground:setFillColor( 1 )
+
+    local logo = display.newImageRect( headerGroup, "img/company_logo.png", 54, 49 )
+    logo.x = 50
+    logo.y = 40
+
+    -- Title text
+    local titleText = display.newText( 
+        {
+            parent = headerGroup,
+            text = "Multi-Record",
+            x = 230,
+            y = 40,
+            font = native.systemFont,
+            fontSize = 48,
+            align = "left"
+        }
+    )
+    titleText:setFillColor(unpack(textColor1))
 
     model = dataProvider.new()
 
@@ -163,7 +211,7 @@ function scene:create( event )
             left = scrollViewAnchorLeft,
             width = scrollViewWidth,
             height = scrollViewHeight,
-            itemWidth = 320,
+            itemWidth = 300,
             itemHeight = 120,
             spacingX = 10,
             spacingY = 10,
@@ -182,8 +230,34 @@ function scene:create( event )
     end
 
     local filterWidth = 300
-    local filterField = native.newTextField( display.contentWidth - filterWidth / 2, scrollViewAnchorTop - 40, filterWidth, 32 )
+    local filterField = native.newTextField( display.contentWidth - filterWidth / 2 - 20, headerControlPosY + 16, filterWidth, 32 )
     filterField:addEventListener( "userInput", filterInputListener)
+
+    local sortHeaderText = display.newText( 
+        {
+            parent = headerGroup,
+            text = "Sort",
+            x = 40,
+            y = 88,
+            font = native.systemFont,
+            fontSize = 18,
+            align = "left"
+        }
+    )
+    sortHeaderText:setFillColor(unpack(textColor1))
+
+    local filterHeaderText = display.newText( 
+        {
+            parent = headerGroup,
+            text = "Filter",
+            x = display.contentWidth -300,
+            y = 88,
+            font = native.systemFont,
+            fontSize = 18,
+            align = "left"
+        }
+    )
+    filterHeaderText:setFillColor(unpack(textColor1))
 end
  
  
