@@ -1,5 +1,7 @@
 local composer = require( "composer" )
 local widget = require( "widget" )
+local gridViewControl = require ( "src.controls.gridView" )
+
  
 local scene = composer.newScene()
  
@@ -9,7 +11,7 @@ local scene = composer.newScene()
 -- -----------------------------------------------------------------------------------
  
  local scrollViewAnchorLeft = 10
- local scrollViewAnchorTop = 100
+ local scrollViewAnchorTop = 150
  local scrollViewWidth = display.contentWidth - scrollViewAnchorLeft - 10
  local scrollViewHeight = display.contentHeight - scrollViewAnchorTop - 10
  local scrollViewPadding = 10
@@ -28,25 +30,19 @@ function scene:create( event )
     local background = display.newRect( sceneGroup, display.contentCenterX, display.contentCenterY, display.contentWidth, display.contentHeight )
     background:setFillColor( 0.5 )
 
-    local scrollView = widget.newScrollView(
+    local gridView = gridViewControl.new(
         {
             top = scrollViewAnchorTop,
             left = scrollViewAnchorLeft,
             width = scrollViewWidth,
             height = scrollViewHeight,
-            horizontalScrollDisabled = true
+            itemWidth = 320,
+            itemHeight = 120,
+            spacingX = 10,
+            spacingY = 10,
+            numItems = 100
         }
     )
-
-    local contentHeight = 120
-    for i=1,10 do
-        local contentImage = display.newImageRect( sceneGroup, "img/rounded_rectangle.png", scrollViewWidth - scrollViewPaddingHorizontal, contentHeight )
-        contentImage.x = contentImage.width * 0.5
-        contentImage.y = contentHeight * 0.5 + ((i - 1) * contentHeight + 10)
-        contentImage:setFillColor(1, 0, 0)
-        scrollView:insert(contentImage)
-    end
- 
 end
  
  
