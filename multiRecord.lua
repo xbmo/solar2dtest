@@ -16,6 +16,8 @@ local scene = composer.newScene()
  local scrollViewHeight = display.contentHeight - scrollViewAnchorTop - 10
  local scrollViewPadding = 10
  local scrollViewPaddingHorizontal = scrollViewPadding * 2
+
+ local show100 = false
  
  
 -- -----------------------------------------------------------------------------------
@@ -43,6 +45,27 @@ function scene:create( event )
             numItems = 100
         }
     )
+
+    local function handleToggleButtonEvent ( event )
+        if ( "ended" == event.phase ) then
+            gridView:refresh( show100 and 100 or 9)
+            show100 = not show100
+        end
+    end
+
+    local toggleButton = widget.newButton(
+        {
+            left = scrollViewAnchorLeft,
+            top = scrollViewAnchorTop - 40,
+            width = 100,
+            height = 32,
+            label = "Toggle",
+            shape = "roundedRect",
+            fillColor = { default={0.9}, over={0.1} },
+            onEvent = handleToggleButtonEvent
+        }
+    )
+
 end
  
  

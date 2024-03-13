@@ -50,37 +50,58 @@ function M.new(options)
         }
     )
 
-    local itemsPerRow = math.floor(width / itemWidth)
-    local numRows = math.ceil(numItems / itemsPerRow)
-
-    scrollView:setScrollHeight(numRows * itemHeight + (numRows * spacingY))
-
     local startOffsetX = 0
     local startOffsetY = 0
 
-    scrollView.contentItems = {}
+    function scrollView:refresh( numItems )
 
-    for i=1,numItems do 
-        local contentGroup = display.newGroup()
+        self.contentItems = self.contentItems or {}
+        numItems = numItems or #self.contentItems
 
-        -- Set up anchors for child objects
-        contentGroup.anchorX = 0
-        contentGroup.anchorY = 0
-        contentGroup.anchorChildren = true
+        for i=#self.contentItems,1,-1 do
+            local item = self.contentItems[i]
+            self:remove( item )
+            item:removeSelf()
+        end
 
-        -- Calculate the position of this item
-        local index = i - 1
-        local row = math.floor(index / itemsPerRow)
-        contentGroup.x = startOffsetX + (index % itemsPerRow) * (itemWidth + spacingX)
-        contentGroup.y = startOffsetY + row * (itemHeight + spacingY)
+        self.contentItems = {}
 
-        -- Use a callback to display content for this item
-        provideContent( contentGroup, i, itemWidth, itemHeight )
+        local itemsPerRow = math.floor(width / itemWidth)
+        local numRows = math.ceil(numItems / itemsPerRow)
+    
+        local contentHeight = numRows * itemHeight + (numRows * spacingY)
+        self:setScrollHeight(contentHeight)
 
-        -- Insert into the scroll view widget visuals, and data structure
-        scrollView:insert(contentGroup)
-        table.insert( scrollView.contentItems, contentGroup )
+        for i=1,numItems do 
+            local contentGroup = display.newGroup()
+    
+            -- Set up anchors for child objects
+            contentGroup.anchorX = 0
+            contentGroup.anchorY = 0
+            contentGroup.anchorChildren = true
+    
+            -- Calculate the position of this item
+            local index = i - 1
+            local row = math.floor(index / itemsPerRow)
+            contentGroup.x = startOffsetX + (index % itemsPerRow) * (itemWidth + spacingX)
+            contentGroup.y = startOffsetY + row * (itemHeight + spacingY)
+    
+            -- Use a callback to display content for this item
+            provideContent( contentGroup, i, itemWidth, itemHeight )
+    
+            -- Insert into the scroll view widget visuals, and data structure
+            self:insert( contentGroup )
+            table.insert( self.contentItems, contentGroup )
+        end
+        
+        -- Move the scroll position if the new content is shorter than the current scroll position
+        local scrollX, scrollY = self:getContentPosition()
+        if math.abs(scrollY) > contentHeight then
+            self:scrollToPosition( { y = 0, time = 100 })
+        end
     end
+
+    scrollView:refresh( numItems )
 
     return scrollView
 end
