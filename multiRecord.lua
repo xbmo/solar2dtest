@@ -20,28 +20,68 @@ local scene = composer.newScene()
  local textColor1 = { 0.16, 0.29, 0.38, 1 }
  local buttonColorRegular = { 0.09, 0.72, 0.69, 1 }
  local buttonColorDown = { 1 }
+ local dueColor = { 1, 0, 0}
+ local outstandingColor = { .9, .7, 0}
 
  local model
 
  local function detailedItemRenderer( group, index, width, height )
-    local contentImage = display.newImageRect( group, "img/rounded_rectangle.png", width, height )
-    contentImage:setFillColor(0.75)
+    local contentImage = display.newImageRect( group, "img/rounded_rectangle_glow.png", width+20, height+20)
+    contentImage.alpha = 0.25
+    local innerImage = display.newImageRect( group, "img/rounded_rectangle.png", width, height )
+    innerImage:setFillColor(0.95)
 
     local entry = model.data[ index ]
 
-    local marginLeft = 20
-    display.newText( 
+    local avatarImage = display.newImageRect( group, "img/avatar.png", 80, 80 )
+    avatarImage.x = -width * 0.5 + 60
+
+    local marginLeft = 110
+    local nameText = display.newText( 
         {
             parent = group,
             text = entry.noTitleName,
             x = marginLeft,
-            y = -16,
+            y = -10,
             width = width,
             font = native.systemFont,
-            fontSize = 24,
+            fontSize = 18,
             align = "left"
         }
     )
+    nameText:setFillColor(unpack(textColor1))
+
+    local roomText = display.newText( 
+        {
+            parent = group,
+            text = entry.room,
+            x = marginLeft,
+            y = nameText.y + nameText.height + 3,
+            width = width,
+            font = native.systemFont,
+            fontSize = 14,
+            align = "left"
+        }
+    )
+    roomText:setFillColor(unpack(textColor1))
+
+    if (entry.due > 0) then
+        local dueBackground = display.newRoundedRect( group, width / 2 - 30, -36, 28, 20, 5 )
+        dueBackground:setFillColor(unpack(dueColor))
+
+        local dueText = display.newText( group, tostring(entry.due), dueBackground.x, dueBackground.y, native.systemFont, 12)
+    end
+
+    if (entry.oustanding > 0) then
+        local positionX = width / 2 - 30
+        if entry.due > 0 then
+            positionX = positionX - 36
+        end
+        local dueBackground = display.newRoundedRect( group, positionX, -36, 28, 20, 5 )
+        dueBackground:setFillColor(unpack(outstandingColor))
+
+        local dueText = display.newText( group, tostring(entry.oustanding), dueBackground.x, dueBackground.y, native.systemFont, 12)
+    end
 
     return contentImage
  end
@@ -211,10 +251,10 @@ function scene:create( event )
             left = scrollViewAnchorLeft,
             width = scrollViewWidth,
             height = scrollViewHeight,
-            itemWidth = 300,
+            itemWidth = 242,
             itemHeight = 120,
-            spacingX = 10,
-            spacingY = 10,
+            spacingX = 5,
+            spacingY = 5,
             numItems = model:getNumEntries(),
             itemRenderer = detailedItemRenderer
         }
@@ -250,7 +290,7 @@ function scene:create( event )
         {
             parent = headerGroup,
             text = "Filter",
-            x = display.contentWidth -300,
+            x = display.contentWidth - 300,
             y = 88,
             font = native.systemFont,
             fontSize = 18,
