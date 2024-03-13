@@ -37,8 +37,6 @@ function M.new()
         data = jsonData
     }
 
-    print(dataObject.data[1].noTitleName)
-
     function dataObject:sort( sortType )
         -- always copy the data being sorted rather than working on the source JSON data
         local sortedData = {}
@@ -46,7 +44,6 @@ function M.new()
             sortedData[k] = v
         end
         self.data = sortedData
-        print( sortedData[1] )
         if ( "nameAZ" == sortType ) then
             table.sort( sortedData, function(a, b) 
                 return a.noTitleName < b.noTitleName
@@ -65,22 +62,31 @@ function M.new()
             end )
         elseif ( "outstandingAZ" == sortType ) then
             table.sort( sortedData, function(a, b) 
-                return a.outstanding < b.outstanding
+                return a.oustanding < b.oustanding
             end )
         elseif ( "outstandingZA" == sortType) then
             table.sort( sortedData, function(a, b) 
-                return a.outstanding > b.outstanding
+                return a.oustanding > b.oustanding
             end )
         end
     end
 
+    function dataObject:getNumEntries()
+        return #self.data
+    end
+
     dataObject:sort( "nameAZ" )
+
+    -- Uncomment to print out sorted data
+    --[[
+
 
     for i=1,#dataObject.data do
         local entry = dataObject.data[i]
         local encoded = json.encode( entry, { withIndent=true} )
         print( encoded )
     end
+    ]]
 
     return dataObject
 end

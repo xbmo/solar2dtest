@@ -2,29 +2,13 @@ local widget = require( "widget" )
 
 local M = {}
 
-local function provideContent( group, index, width, height )
-    local contentImage = display.newImageRect( group, "img/rounded_rectangle.png", width, height )
+local function defaultItemRenderer( group, index, width, height )
+    local contentImage = display.newRect( group, 0, 0, width, height )
     if index % 2 == 0 then
         contentImage:setFillColor(1, 0, 0)
     else
         contentImage:setFillColor(0, 1, 0)
     end
-
-    local marginLeft = 20
-    display.newText( 
-        {
-            parent = group,
-            text = "Item " .. index,
-            x = marginLeft,
-            y = 0,
-            width = width,
-            font = native.systemFont,
-            fontSize = 24,
-            align = "left"
-        }
-    )
-
-    return contentImage
 end
 
 function M.new(options)
@@ -39,6 +23,7 @@ function M.new(options)
     local spacingX = options.spacingX or 0
     local spacingY = options.spacingY or 0
     local numItems = options.numItems or 0
+    local itemRenderer = options.itemRenderer or defaultItemRenderer
 
     local scrollView = widget.newScrollView(
         {
@@ -49,6 +34,8 @@ function M.new(options)
             horizontalScrollDisabled = true
         }
     )
+
+    scrollView.itemRenderer = itemRenderer
 
     local startOffsetX = 0
     local startOffsetY = 0
@@ -87,7 +74,7 @@ function M.new(options)
             contentGroup.y = startOffsetY + row * (itemHeight + spacingY)
     
             -- Use a callback to display content for this item
-            provideContent( contentGroup, i, itemWidth, itemHeight )
+            self.itemRenderer( contentGroup, i, itemWidth, itemHeight )
     
             -- Insert into the scroll view widget visuals, and data structure
             self:insert( contentGroup )
