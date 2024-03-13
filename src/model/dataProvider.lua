@@ -34,7 +34,8 @@ function M.new()
     local dataObject = 
     {
         jsonData = jsonData,
-        data = jsonData
+        data = jsonData,
+        sortType = "nameAZ"
     }
 
     function dataObject:sort( sortType )
@@ -69,6 +70,8 @@ function M.new()
                 return a.oustanding > b.oustanding
             end )
         end
+
+        self.sortType = sortType
     end
 
     function dataObject:filterData( filter )
@@ -85,6 +88,8 @@ function M.new()
                 table.remove(filteredData, i)
             end
         end
+
+        self:sort( self.sortType )
     end
 
     function dataObject:getNumEntries()
