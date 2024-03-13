@@ -1,7 +1,7 @@
 local composer = require( "composer" )
 local widget = require( "widget" )
 local gridViewControl = require ( "src.controls.gridView" )
-
+local dataProvider = require( "src.model.dataProvider" )
  
 local scene = composer.newScene()
  
@@ -66,6 +66,7 @@ function scene:create( event )
         }
     )
 
+    local data = dataProvider.new()
 end
  
  
