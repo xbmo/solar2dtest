@@ -1,7 +1,5 @@
------------------------------------------------------------------------------------------
---
--- main.lua
---
------------------------------------------------------------------------------------------
+local composer = require( "composer" )
 
--- Your code here
+display.setStatusBar( display.HiddenStatusBar )
+
+composer.gotoScene( "multiRecord" )
