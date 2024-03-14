@@ -86,6 +86,24 @@ local scene = composer.newScene()
     return contentImage
  end
 
+ local function createSortButton( labelText, positionLeft, width, onClick )
+    widget.newButton(
+        {
+            left = positionLeft,
+            top = headerControlPosY,
+            width = width,
+            height = 32,
+            label = labelText,
+            shape = "roundedRect",
+            labelColor = { default={ 1 }, over=buttonColorRegular },
+            fillColor = { default=buttonColorRegular, over=buttonColorDown },
+            strokeColor = {default=buttonColorRegular, over=buttonColorRegular},
+            strokeWidth = 2,
+            onEvent = onClick
+        }
+    )
+ end
+
  local function createSortButtons( gridView )
 
     local function sortButtonEvent( sortType, event )
@@ -97,115 +115,22 @@ local scene = composer.newScene()
 
     local buttonWidth = 100
     local buttonSpacing = 10
-    local buttonPos = scrollViewAnchorLeft + 10
+    local buttonWidthPlusSpacing = buttonWidth + buttonSpacing
+    local buttonStartPos = scrollViewAnchorLeft + 10
+
+    -- TODO - place these into a horizontal layout group so that the position of each button doesn't need to be specified and maintained
     -- Sort A-z button
-    widget.newButton(
-        {
-            left = buttonPos,
-            top = headerControlPosY,
-            width = 100,
-            height = 32,
-            label = "Name A-z",
-            shape = "roundedRect",
-            labelColor = { default={ 1 }, over=buttonColorRegular },
-            fillColor = { default=buttonColorRegular, over=buttonColorDown },
-            strokeColor = {default=buttonColorRegular, over=buttonColorRegular},
-            strokeWidth = 2,
-            onEvent = function( event ) sortButtonEvent( "nameAZ", event ) end
-        }
-    )
-
-    buttonPos = buttonPos + buttonWidth + buttonSpacing
+    createSortButton( "Name A-z", buttonStartPos, buttonWidth, function( event ) sortButtonEvent( "nameAZ", event) end)
     -- Sort Z-a button
-    widget.newButton(
-        {
-            left = buttonPos,
-            top = headerControlPosY,
-            width = 100,
-            height = 32,
-            label = "Name Z-a",
-            shape = "roundedRect",
-            labelColor = { default={ 1 }, over=buttonColorRegular },
-            fillColor = { default=buttonColorRegular, over=buttonColorDown },
-            strokeColor = {default=buttonColorRegular, over=buttonColorRegular},
-            strokeWidth = 2,
-            onEvent = function( event ) sortButtonEvent( "nameZA", event ) end
-        }
-    )
-
-    buttonPos = buttonPos + buttonWidth + buttonSpacing
-    -- Sort Due ascending button
-    widget.newButton(
-        {
-            left = buttonPos,
-            top = headerControlPosY,
-            width = 100,
-            height = 32,
-            label = "Due >",
-            shape = "roundedRect",
-            labelColor = { default={ 1 }, over=buttonColorRegular },
-            fillColor = { default=buttonColorRegular, over=buttonColorDown },
-            strokeColor = {default=buttonColorRegular, over=buttonColorRegular},
-            strokeWidth = 2,
-            onEvent = function( event ) sortButtonEvent( "dueAZ", event ) end
-        }
-    )
-
-    buttonPos = buttonPos + buttonWidth + buttonSpacing
-    -- Sort Due descending button
-    widget.newButton(
-        {
-            left = buttonPos,
-            top = headerControlPosY,
-            width = 100,
-            height = 32,
-            label = "Due <",
-            shape = "roundedRect",
-            labelColor = { default={ 1 }, over=buttonColorRegular },
-            fillColor = { default=buttonColorRegular, over=buttonColorDown },
-            strokeColor = {default=buttonColorRegular, over=buttonColorRegular},
-            strokeWidth = 2,
-            onEvent = function( event ) sortButtonEvent( "dueZA", event ) end
-        }
-    )
-
-    buttonPos = buttonPos + buttonWidth + buttonSpacing
+    createSortButton( "Name Z-a", buttonStartPos + buttonWidthPlusSpacing, buttonWidth, function( event ) sortButtonEvent( "nameZA", event) end)
+    -- Sort due ascending button
+    createSortButton( "Due >", buttonStartPos + buttonWidthPlusSpacing * 2, buttonWidth, function( event ) sortButtonEvent( "dueAZ", event) end)
+    -- Sort due descending button
+    createSortButton( "Due <", buttonStartPos + buttonWidthPlusSpacing * 3, buttonWidth, function( event ) sortButtonEvent( "dueZA", event) end)
     -- Sort outstanding ascending button
-    widget.newButton(
-        {
-            left = buttonPos,
-            top = headerControlPosY,
-            width = 100,
-            height = 32,
-            label = "Outstanding >",
-            shape = "roundedRect",
-            fontSize = 12,
-            labelColor = { default={ 1 }, over=buttonColorRegular },
-            fillColor = { default=buttonColorRegular, over=buttonColorDown },
-            strokeColor = {default=buttonColorRegular, over=buttonColorRegular},
-            strokeWidth = 2,
-            onEvent = function( event ) sortButtonEvent( "outstandingAZ", event ) end
-        }
-    )
-
-    buttonPos = buttonPos + buttonWidth + buttonSpacing
-    -- Sort outstanding ascending button
-    widget.newButton(
-        {
-            left = buttonPos,
-            top = headerControlPosY,
-            width = 100,
-            height = 32,
-            label = "Outstanding <",
-            shape = "roundedRect",
-            fontSize = 12,
-            labelColor = { default={ 1 }, over=buttonColorRegular },
-            fillColor = { default=buttonColorRegular, over=buttonColorDown },
-            strokeColor = {default=buttonColorRegular, over=buttonColorRegular},
-            strokeWidth = 2,
-            onEvent = function( event ) sortButtonEvent( "outstandingZA", event ) end
-        }
-    )
+    createSortButton( "Outstanding >", buttonStartPos + buttonWidthPlusSpacing * 4, buttonWidth, function( event ) sortButtonEvent( "outstandingAZ", event) end)
+    -- Sort outstanding descending button
+    createSortButton( "Outstanding <", buttonStartPos + buttonWidthPlusSpacing * 5, buttonWidth, function( event ) sortButtonEvent( "outstandingZA", event) end)
  end
  
  
