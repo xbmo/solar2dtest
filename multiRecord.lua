@@ -69,7 +69,7 @@ local scene = composer.newScene()
         local dueBackground = display.newRoundedRect( group, width / 2 - 30, -36, 28, 20, 5 )
         dueBackground:setFillColor(unpack(dueColor))
 
-        local dueText = display.newText( group, tostring(entry.due), dueBackground.x, dueBackground.y, native.systemFont, 12)
+        display.newText( group, tostring(entry.due), dueBackground.x, dueBackground.y, native.systemFont, 12)
     end
 
     if (entry.oustanding > 0) then
@@ -80,7 +80,7 @@ local scene = composer.newScene()
         local dueBackground = display.newRoundedRect( group, positionX, -36, 28, 20, 5 )
         dueBackground:setFillColor(unpack(outstandingColor))
 
-        local dueText = display.newText( group, tostring(entry.oustanding), dueBackground.x, dueBackground.y, native.systemFont, 12)
+        display.newText( group, tostring(entry.oustanding), dueBackground.x, dueBackground.y, native.systemFont, 12)
     end
 
     return contentImage
